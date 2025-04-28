@@ -1,0 +1,18 @@
+
+services:
+  bot_consumer:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+
+    container_name: "bot-faststream"
+
+    environment:
+      KAFKA_URL: ${KAFKA_URL:?}
+
+    volumes:
+      - ../app/:/app/
+      - ../.env:/app/.env
+
+
+    command: "faststream run --factory consumers.main:get_app --reload"
