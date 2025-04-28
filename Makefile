@@ -9,6 +9,14 @@ LOGS = docker logs
 ENV = --env-file .env
 
 
+.PHONY: all
+all:
+	${DC} -f ${CONSUMER_APP} ${ENV} -f ${BOT_APP} ${ENV} up --build -d
+
+.PHONY: all-down
+all-down:
+	${DC} -f ${CONSUMER_APP} ${ENV} -f ${BOT_APP} ${ENV} down
+
 .PHONY: consumer
 consumer:
 	${DC} -f ${CONSUMER_APP} ${ENV} up --build -d

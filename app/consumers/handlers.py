@@ -12,13 +12,15 @@ router = KafkaRouter()
 settings = get_settings()
 
 
-@router.subscriber(settings.NEW_MESSAGE_TOPIC, group_id=settings.KAFKA_GROUP_ID)
+@router.subscriber(settings.NEW_CHAT_TOPIC, group_id=settings.KAFKA_GROUP_ID)
 async def new_chat_handler(message: NewChatSchema) -> None:
     container = get_container()
 
     async with container() as request_container:
         bot = await request_container.get(Bot)
-        await bot.create_forum_topic
+        chat = await bot.get_chat(chat_id=settings.TELEGRAM_GROUP_ID)
+        topic_title = f"{message.chat_title} | {message.chat_oid}"
+        await chat.create_forum_topic(name=topic_title)
 
 
 @router.subscriber(settings.NEW_MESSAGE_TOPIC, group_id=settings.KAFKA_GROUP_ID)

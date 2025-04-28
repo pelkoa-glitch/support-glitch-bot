@@ -1,6 +1,6 @@
 import logging
 import re
-from telegram import Update
+from telegram import Bot, Update
 from telegram.ext import ContextTypes
 
 from containers.factories import get_container
@@ -61,23 +61,8 @@ async def start_dialog(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def send_message_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message.reply_to_message is None:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Ошибка, выберите сообщщение, на которое вы отвечаете",
-        )
-        return
-
-    try:
-        chat_oid = (
-            re.findall(r"\s{1}\(.+\)", update.message.reply_to_message.text)[0]
-            .replace(" ", "")
-            .replace("(", "")
-            .replace(")", "")
-        )
-    except IndexError:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Необходимо ответить именно на сообщение пользователя",
-        )
-        return
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="TODO: add bot message sender service",
+        message_thread_id=update.message.message_thread_id,
+    )
