@@ -10,7 +10,7 @@ async def error_handler(update: Update, context: CallbackContext) -> None:
         raise context.error
     except BaseWebException as error:
         await update.effective_message.reply_text(
-            "\n".join((error.message, error.error_text))
+            '\n'.join((error.message, error.error_text))
         )
     except ApplicationException as error:
         print(error.meta)

@@ -19,7 +19,7 @@ async def get_all_chats_handler(update: Update, context: ContextTypes.DEFAULT_TY
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text=convert_chats_dtos_to_message(chats=chats),
-            parse_mode="MarkdownV2",
+            parse_mode='MarkdownV2',
         )
 
 
@@ -35,16 +35,16 @@ async def set_chat_listener_handler(update: Update, context: ContextTypes.DEFAUL
 
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="Вы подключились к чату.",
-            parse_mode="MarkdownV2",
+            text='Вы подключились к чату.',
+            parse_mode='MarkdownV2',
         )
 
 
 async def quit_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Вы вышли из чата.",
-        parse_mode="MarkdownV2",
+        text='Вы вышли из чата.',
+        parse_mode='MarkdownV2',
     )
 
 
@@ -52,8 +52,8 @@ async def start_dialog(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=(
-            "Теперь вы отвечаете на сообщения. Выберите сообщение и "
-            "напишите ответ. Пользователь увидит ваш ответ на сайте."
+            'Теперь вы отвечаете на сообщения. Выберите сообщение и '
+            'напишите ответ. Пользователь увидит ваш ответ на сайте.'
         ),
     )
 
@@ -63,6 +63,6 @@ async def start_dialog(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_message_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="TODO: add bot message sender service",
+        text='TODO: add bot message sender service',
         message_thread_id=update.message.message_thread_id,
     )

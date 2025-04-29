@@ -1,15 +1,13 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-
-@dataclass
-class BaseCharService(ABC):
-    @abstractmethod
-    async def set_current_chat(self, chat_oid: str, telegram_chat_id: str) -> None:
-        ...
+from dtos.chats import ChatInfoDTO
+from repositories.chats.base import BaseChatsRepository
 
 
-@dataclass
-class MongoDBChatService(ABC):
-    async def set_current_chat(self, chat_oid: str, telegram_chat_id: str) -> None:
-        ...
+
+@dataclass(eq=False)
+class ChatsService:
+    repository: BaseChatsRepository
+
+    async def add_chat(self, chat_info: ChatInfoDTO) -> ChatInfoDTO:
+        return await self.repository.add_chat(chat_info=chat_info)

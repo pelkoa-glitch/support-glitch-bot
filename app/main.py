@@ -20,10 +20,10 @@ from settings import get_settings
 def get_app():
     settings = get_settings()
     application = ApplicationBuilder().token(token=settings.TG_BOT_TOKEN).build()
-    start_command_handler = CommandHandler("start", start_handler)
-    get_all_chats_command_handler = CommandHandler("chats", get_all_chats_handler)
+    start_command_handler = CommandHandler('start', start_handler)
+    get_all_chats_command_handler = CommandHandler('chats', get_all_chats_handler)
     set_chat_listener_command_handler = CommandHandler(
-        "listen_chat", set_chat_listener_handler
+        'listen_chat', set_chat_listener_handler
     )
     message_handler = MessageHandler(
         filters=filters.TEXT & ~filters.COMMAND,
@@ -41,5 +41,5 @@ def get_app():
     return application
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     get_app().run_polling()
