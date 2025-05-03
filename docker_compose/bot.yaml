@@ -11,4 +11,7 @@ services:
       - ../app/:/app/
       - ../.env:/app/.env
 
-    command: "python main.py"
+    ports:
+      - "5690:5691"
+
+    command: "debugpy --listen 0.0.0.0:5691 main.py"

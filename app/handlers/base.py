@@ -7,6 +7,6 @@ from settings import get_settings
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     settings = get_settings()
     await context.bot.send_message(
-        chat_id=update.effective_chat.id,
+        chat_id=update.effective_chat.id, # type: ignore
         text=settings.GREETING_TEXT,
     )

@@ -14,5 +14,7 @@ services:
       - ../app/:/app/
       - ../.env:/app/.env
 
+    ports:
+      - "5679:5680"
 
-    command: "faststream run --factory consumers.main:get_app --reload"
+    command: "debugpy --listen 0.0.0.0:5680 -m faststream run --factory consumers.main:get_app --reload"

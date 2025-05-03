@@ -25,4 +25,4 @@ class ProjectSettings(BaseSettings):
 
 @lru_cache(1)
 def get_settings() -> ProjectSettings:
-    return ProjectSettings()
+    return ProjectSettings() # type: ignore

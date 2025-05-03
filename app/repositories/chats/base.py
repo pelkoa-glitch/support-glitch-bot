@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from sqlite3 import connect
+
+from aiosqlite import connect
 
 from dtos.chats import ChatInfoDTO
-from repositories.sqls import ADD_NEW_CHAT_INFO
+from exceptions.chats import ChatInfoNotFoundError
+from repositories.sqls import ADD_NEW_CHAT_INFO, GET_CHAT_INFO_BY_TELEGRAM_ID, GET_CHAT_INFO_BY_WEB_ID, GET_CHATS_COUNT
 
 
 class BaseChatsRepository(ABC):
@@ -12,11 +14,18 @@ class BaseChatsRepository(ABC):
         ...
 
     @abstractmethod
-    async def get_by_external_id(self, external_chat_id: str) -> ChatInfoDTO:
+    async def get_by_web_id(self, web_chat_id: str) -> ChatInfoDTO:
         ...
 
     @abstractmethod
     async def add_chat(self, chat_info: ChatInfoDTO) -> ChatInfoDTO:
+        ...
+
+    @abstractmethod
+    async def check_chat_exists(self,
+        web_chat_id: str | None = None,
+        telegram_chat_id: str | None = None
+    ) -> bool:
         ...
 
 
@@ -26,10 +35,64 @@ class SQLChatsRepositorty(BaseChatsRepository):
 
     async def add_chat(self, chat_info: ChatInfoDTO) -> ChatInfoDTO:
         async with connect(self.database_url) as connection:
-            row = await connection.execute_insert(
+            await connection.execute_insert(
                 ADD_NEW_CHAT_INFO,
                 (chat_info.web_chat_id, chat_info.telegram_chat_id)
             )
-            web_chat_id, telegramchat_id = row
+            await connection.commit()
 
-        return ChatInfoDTO(web_chat_id=web_chat_id, telegram_chat_id=telegramchat_id)
+        return ChatInfoDTO(
+                web_chat_id=chat_info.web_chat_id,
+                telegram_chat_id=chat_info.telegram_chat_id
+            )
+
+    async def get_by_telegram_id(self, telegram_chat_id: str) -> ChatInfoDTO:
+        async with connect(self.database_url) as connection:
+            result = await connection.execute_fetchall(
+                GET_CHAT_INFO_BY_TELEGRAM_ID,
+                (telegram_chat_id,)
+            )
+
+        if result is None:
+            raise ChatInfoNotFoundError(telegram_chat_id=telegram_chat_id)
+
+        web_chat_id, telegram_chat_id = next(iter(result))
+
+        return ChatInfoDTO(
+            web_chat_id=web_chat_id,
+            telegram_chat_id=str(telegram_chat_id)
+        )
+
+    async def get_by_web_id(self, web_chat_id: str) -> ChatInfoDTO:
+        async with connect(self.database_url) as connection:
+            result = await connection.execute_fetchall(
+                GET_CHAT_INFO_BY_WEB_ID,
+                (web_chat_id,)
+            )
+
+        if result is None:
+            raise ChatInfoNotFoundError(web_chat_id=web_chat_id)
+
+        web_chat_id, telegram_chat_id = next(iter(result))
+
+        return ChatInfoDTO(
+            web_chat_id=web_chat_id,
+            telegram_chat_id=str(telegram_chat_id)
+        )
+
+    async def check_chat_exists(self,
+        web_chat_id: str | None = None,
+        telegram_chat_id: str | None = None
+    ) -> bool:
+        async with connect(self.database_url) as connection:
+            result = await connection.execute_fetchall(
+                GET_CHATS_COUNT,
+                (web_chat_id, telegram_chat_id)
+            )
+
+        if result is None:
+            return False
+
+        result, *_ = result
+
+        return result[0] > 0
