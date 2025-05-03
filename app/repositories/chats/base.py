@@ -5,7 +5,7 @@ from aiosqlite import connect
 
 from dtos.chats import ChatInfoDTO
 from exceptions.chats import ChatInfoNotFoundError
-from repositories.sqls import ADD_NEW_CHAT_INFO, GET_CHAT_INFO_BY_TELEGRAM_ID, GET_CHAT_INFO_BY_WEB_ID, GET_CHATS_COUNT
+from repositories.sqls import ADD_NEW_CHAT_INFO, DELETE_CHAT_QUERY, GET_CHAT_INFO_BY_TELEGRAM_ID, GET_CHAT_INFO_BY_WEB_ID, GET_CHATS_COUNT
 
 
 class BaseChatsRepository(ABC):
@@ -22,10 +22,19 @@ class BaseChatsRepository(ABC):
         ...
 
     @abstractmethod
-    async def check_chat_exists(self,
+    async def check_chat_exists(
+        self,
         web_chat_id: str | None = None,
         telegram_chat_id: str | None = None
     ) -> bool:
+        ...
+
+    @abstractmethod
+    async def delete_chat(
+        self,
+        web_chat_id: str | None = None,
+        telegram_chat_id: str | None = None
+    ) -> None:
         ...
 
 
@@ -96,3 +105,15 @@ class SQLChatsRepositorty(BaseChatsRepository):
         result, *_ = result
 
         return result[0] > 0
+
+    async def delete_chat(
+        self,
+        web_chat_id: str | None = None,
+        telegram_chat_id: str | None = None
+    ) -> None:
+        async with connect(self.database_url) as connection:
+            await connection.execute(
+                DELETE_CHAT_QUERY,
+                (web_chat_id, telegram_chat_id)
+            )
+            await connection.commit()

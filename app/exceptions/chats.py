@@ -52,16 +52,8 @@ class ChatAlredyExistsError(ApplicationException):
 
 
 @dataclass(frozen=True, eq=False)
-class ChatNotFoundByTelegramIdError(ApplicationException):
+class ChatNotFoundError(ApplicationException):
     telegram_chat_id: str | None = None
-
-    @property
-    def message(self) -> str:
-        return 'Чат для ответа не зарегистрирован в боте'
-
-
-@dataclass(frozen=True, eq=False)
-class ChatNotFoundByWebIdError(ApplicationException):
     web_chat_id: str | None = None
 
     @property
