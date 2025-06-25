@@ -69,4 +69,4 @@ async def send_message_to_chat(update: Update, context: ContextTypes.DEFAULT_TYP
         service = await request_container.get(ChatsService)
         chat_info = await service.get_chat_info_by_telegram_id(telegram_chat_id=update.message.message_thread_id) # type: ignore
 
-        await web_service.send_message_to_chat(chat_oid=chat_info.web_chat_id, message_text=update.message.text) # type: ignore
+        await web_service.send_message_to_chat(chat_oid=chat_info.web_chat_id, message_text=update.message.text, is_manager=True) # type: ignore

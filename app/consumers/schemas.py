@@ -8,6 +8,7 @@ class NewChatMessageSchema(BaseModel):
     message_text: str
     message_oid: str
     chat_oid: str
+    is_manager: bool
 
 
 class NewChatSchema(BaseModel):

@@ -47,7 +47,7 @@ class BaseChatWebService(ABC):
     async def get_chat_info(self, chat_oid: str) -> ChatListItemDTO:
         ...
     @abstractmethod
-    async def send_message_to_chat(self, chat_oid: str, message_text: str) -> None:
+    async def send_message_to_chat(self, chat_oid: str, message_text: str, is_manager: bool) -> None:
         ...
 
 @dataclass
@@ -120,7 +120,7 @@ class ChatWebService(BaseChatWebService):
         return convert_chat_response_to_chat_dto(chat_data=response.json())
 
 
-    async def send_message_to_chat(self, chat_oid: str, message_text: str) -> None:
+    async def send_message_to_chat(self, chat_oid: str, message_text: str, is_manager: bool) -> None:
         try:
             response = await self.http_client.post(
                 url=urljoin(
@@ -128,7 +128,8 @@ class ChatWebService(BaseChatWebService):
                     url=SEND_MESSAGE_TO_CHAT_URL.format(chat_oid=chat_oid)
                 ),
                 json={
-                    'text': message_text
+                    'text': message_text,
+                    'is_manager': is_manager,
                 }
             )
             response.raise_for_status()

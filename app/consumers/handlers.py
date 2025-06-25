@@ -39,11 +39,11 @@ async def new_message_handler(
 
         bot = await request_container.get(Bot)
         chat = await bot.get_chat(chat_id=settings.TELEGRAM_GROUP_ID)
-
-        await chat.send_message(
-            text=message.message_text,
-            message_thread_id=int(chat_info.telegram_chat_id)
-        )
+        if message.is_manager == False:
+            await chat.send_message(
+                text=message.message_text,
+                message_thread_id=int(chat_info.telegram_chat_id)
+            )
 
 @router.subscriber(settings.DELETE_CHAT_TOPIC, group_id=settings.KAFKA_GROUP_ID)
 async def delete_chat_handler(data: DeleteChatSchema) -> None:
